@@ -1,0 +1,30 @@
+seed: 42
+data:
+  datapath: '/Users/bguedou/atut/churner/data/WA_Fn-UseC_-Telco-Customer-Churn.csv'
+  label: 'Churn'
+  numerical: 
+      - 'tenure'
+      - 'MonthlyCharges' 
+      - 'TotalCharges' 
+  categorical: 
+    - 'gender'
+    - 'SeniorCitizen'
+    - 'Partner'
+    - 'Dependents' 
+    - 'PhoneService' 
+    - 'MultipleLines' 
+    - 'InternetService' 
+    - 'OnlineSecurity' 
+    - 'OnlineBackup' 
+    - 'DeviceProtection' 
+    - 'TechSupport' 
+    - 'StreamingTV' 
+    - 'StreamingMovies' 
+    - 'Contract' 
+    - 'PaperlessBilling' 
+    - 'PaymentMethod'
+model:
+    savepath: '/Users/bguedou/atut/churner/saved'
+    k : 5
+inference:
+    alert_threshold: 0.7
