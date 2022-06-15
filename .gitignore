@@ -3,4 +3,4 @@
 **/*cache*
 **/mlruns
 **/logs
-**/.ipynb_checkpoints/*
+**/churner/.ipynb_checkpoints
