@@ -1,6 +1,6 @@
 **/*.pkl
 **/__pycache__
 **/*cache*
-**/cheatsheet.txt
 **/mlruns
 **/logs
+**/*ipynb_checkpoints
