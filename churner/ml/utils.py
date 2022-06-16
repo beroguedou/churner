@@ -27,7 +27,13 @@ def nan_replacer(df, list_variables, list_symbols):
 
 def encoder(df, list_categorical, label, savepath=".", option=None):
     option = 'train' if option is None else option 
-    for var in list_categorical + [label]:
+
+    if option == 'inference':
+        list_to_encode = list_categorical 
+    else:
+        list_to_encode = list_categorical + [label]
+        
+    for var in list_to_encode:
         name = '{}.pkl'.format(var.lower())
         var_savepath = os.path.join(savepath, name)
         if option == 'train':
@@ -44,29 +50,21 @@ def encoder(df, list_categorical, label, savepath=".", option=None):
                 le  = pickle.load(file)
         # Transformer la colonne avec le label encodeur entrainé préalablement
         df[var] = le.transform(df[var])
+
     print("======= L'encodage des variables catégorielles est terminée ! =======")
     return df
 
-def imputer_median(X, config, col='TotalCharges', savepath=".", option=None):
-    option = 'train' if option is None else option
-    var_names = config['data']['categorical']+config['data']['numerical']
+def imputer_median(X, var_names, col='TotalCharges', savepath="."):
     id_ToCh = var_names.index(col)
     col_values = X[:, id_ToCh]
     name = "{}_median.pkl".format(col)
     var_savepath = os.path.join(savepath, name)
-    if option == 'train':
-        # Compute the median
-        median = np.nanmedian(col_values)
-        # Save the median
-        with open(var_savepath, 'wb') as file:
-            pickle.dump(median, file)
-    else:
-        # Load the pre-computed median
-        with open(var_savepath, 'rb') as file:
-            median = pickle.load(file)
-    # Impute NaN with the median        
-    col_values[np.isnan(col_values)] = median
-    X[:, id_ToCh] = col_values
+    
+    # Compute the median
+    median = np.nanmedian(col_values)
+    # Save the median as an artifact
+    with open(var_savepath, 'wb') as file:
+        pickle.dump(median, file)
 
     return X
 
@@ -92,19 +90,20 @@ def preprocessor(df, config, option_output=None, option_train=None):
                  option=option_train)
     # Separate label and other variables
     df = df.reset_index(drop=True)
-    
-    X = df[config['data']['categorical']+config['data']['numerical']].values
-    # Impute the median for TotalCharges
-    X = imputer_median(X,
-                       config,
-                       col='TotalCharges', 
-                       savepath=config['model']['savepath'], 
-                       option=option_train)
+    var_names = config['data']['numerical']+config['data']['categorical']
+    X = df[var_names].values
+    if option_train == 'train':
+        # Impute the median for TotalCharges
+        X = imputer_median(X,
+                           var_names,
+                           col='TotalCharges', 
+                           savepath=config['model']['savepath']
+                          )
         
     if option_output == 'all':
         y = df[config['data']['label']].values
         output = X, y
-    else:
+    if option_output == 'inference':
         output = X
         
     return output

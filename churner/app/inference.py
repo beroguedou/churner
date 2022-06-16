@@ -1,13 +1,16 @@
+import sys
+sys.path.append("/Users/bguedou/churner-ml/")
+
 import os
 import pickle
 import pandas as pd
-
+from churner.ml.utils import preprocessor
 
 
 class Predictor():
+
     def __init__(self, config):
-        self.config = config
-        
+        self.config = config  
         
     def preprocess(self, input_dict):
         # Create a dataframe with parameters data
@@ -24,9 +27,9 @@ class Predictor():
     
     def predict(self, X):
         # Load model with pickle
-        model_path = os.path.join(self.config['savepath'], 
-                                  'churner_calibrated_model.pkl')
-        with open('model_path', 'rb') as file:
+        model_path = os.path.join(self.config['model']['savepath'], 
+                                  self.config['model']['name'])
+        with open(model_path, 'rb') as file:
             model = pickle.load(file)
         # Predict 
         predicted_proba = model.predict_proba(X)[0, 1]
@@ -34,21 +37,21 @@ class Predictor():
     
     def postprocess(self, proba):
         threshold = self.config['inference']['alert_threshold']
-        if proba > threshold:
+        if proba >= threshold:
             message = "This client will leave us. Call him !" 
         else:
             message = " This client is safe !" 
           
         response = {
             'message': message, 
-            'probability': proba
+            'probability': round(proba, 4)
         }
         return response
 
-    def inference(self, input_dict):
-        X = preprocess(input_dict)
-        proba = predict(X)
-        response = postprocess(proba)
+    def inference_pipeline(self, input_dict):
+        X = self.preprocess(input_dict)
+        proba = self.predict(X)
+        response = self.postprocess(proba)
         return response
     
     
