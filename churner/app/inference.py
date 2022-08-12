@@ -1,11 +1,13 @@
 import sys
-sys.path.append("/Users/bguedou/churner-ml/")
+#sys.path.append("/Users/bguedou/churner-ml/")
 
 import os
 import pickle
 import pandas as pd
-from churner.ml.utils import preprocessor
+from churner.ml import utils 
+#from churner.ml.utils import preprocessor
 
+print("toto")
 
 class Predictor():
 
@@ -18,7 +20,7 @@ class Predictor():
         df = pd.DataFrame(input_dict)
         # Make the preprocessings 
         # Separate variables
-        X = preprocessor(df,
+        X = utils.preprocessor(df,
                          self.config, 
                          option_train='inference', 
                          option_output='inference')

@@ -176,4 +176,7 @@ def objective(trial, config, X, y):
                                   )
     return score
 
+def toto():
+    return 'yes'
+
     
