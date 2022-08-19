@@ -1,13 +1,9 @@
 import sys
-#sys.path.append("/Users/bguedou/churner-ml/")
-
 import os
 import pickle
 import pandas as pd
 from churner.ml import utils 
-#from churner.ml.utils import preprocessor
 
-print("toto")
 
 class Predictor():
 
